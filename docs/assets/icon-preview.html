@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Mobile-Pretext App Icon Preview</title>
+<style>
+  body { background: #1a1a2e; display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; align-items: center; min-height: 100vh; margin: 0; font-family: -apple-system, sans-serif; color: #fff; padding: 40px; }
+  .preview { text-align: center; }
+  .preview h3 { margin: 12px 0 4px; font-weight: 400; opacity: 0.7; }
+  .preview p { margin: 0; font-size: 12px; opacity: 0.4; }
+  canvas { border-radius: 22%; image-rendering: auto; }
+  .ios canvas { border-radius: 22%; }
+  .android canvas { border-radius: 26%; }
+  .small canvas { border-radius: 22%; }
+</style>
+</head>
+<body>
+
+<div class="preview ios"><canvas id="icon1024" width="1024" height="1024"></canvas><h3>iOS (1024px)</h3></div>
+<div class="preview android"><canvas id="icon512" width="512" height="512"></canvas><h3>Android (512px)</h3></div>
+<div class="preview small"><canvas id="icon180" width="180" height="180"></canvas><h3>iPhone Home (180px)</h3><p>@3x</p></div>
+<div class="preview small"><canvas id="icon60" width="120" height="120"></canvas><h3>Actual size (60pt @2x)</h3></div>
+
+<script>
+function drawIcon(canvas) {
+  const ctx = canvas.getContext('2d');
+  const s = canvas.width;
+  const u = s / 1024; // unit scale
+
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, s, s);
+  bg.addColorStop(0, '#0a1628');
+  bg.addColorStop(0.5, '#0f2238');
+  bg.addColorStop(1, '#1a0f08');
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  ctx.roundRect(0, 0, s, s, s * 0.22);
+  ctx.fill();
+
+  // Subtle border glow
+  ctx.strokeStyle = 'rgba(85, 198, 217, 0.15)';
+  ctx.lineWidth = 3 * u;
+  ctx.beginPath();
+  ctx.roundRect(4*u, 4*u, s - 8*u, s - 8*u, s * 0.21);
+  ctx.stroke();
+
+  // Flowing text lines (representing text layout)
+  const lineColors = [
+    'rgba(126, 184, 204, 0.35)',
+    'rgba(142, 197, 214, 0.30)',
+    'rgba(158, 208, 223, 0.25)',
+    'rgba(174, 218, 231, 0.20)',
+  ];
+
+  const lineY = 180 * u;
+  const lineH = 22 * u;
+  const lineGap = 32 * u;
+  const lineX = 120 * u;
+  const lineWidths = [0.75, 0.88, 0.92, 0.65, 0.82, 0.70, 0.55, 0.48, 0.90, 0.72, 0.60, 0.85];
+
+  for (let i = 0; i < lineWidths.length; i++) {
+    const y = lineY + i * lineGap;
+    if (y > s - 100 * u) break;
+    const w = lineWidths[i] * (s - lineX * 2);
+    const color = lineColors[i % lineColors.length];
+
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect(lineX, y, w, lineH, 4 * u);
+    ctx.fill();
+  }
+
+  // Ball hole in the text (circle cutout effect)
+  const ballX = 620 * u;
+  const ballY = 440 * u;
+  const ballR = 80 * u;
+
+  // Dark circle where ball "punches through" text
+  const ballGrad = ctx.createRadialGradient(ballX, ballY, 0, ballX, ballY, ballR * 1.5);
+  ballGrad.addColorStop(0, 'rgba(10, 22, 40, 0.9)');
+  ballGrad.addColorStop(0.6, 'rgba(10, 22, 40, 0.5)');
+  ballGrad.addColorStop(1, 'rgba(10, 22, 40, 0)');
+  ctx.fillStyle = ballGrad;
+  ctx.beginPath();
+  ctx.arc(ballX, ballY, ballR * 1.5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Ball glyph
+  ctx.font = `bold ${88 * u}px "Menlo", monospace`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Ball glow
+  ctx.shadowColor = 'rgba(255, 213, 119, 0.6)';
+  ctx.shadowBlur = 30 * u;
+  ctx.fillStyle = '#ffd577';
+  ctx.fillText('◉', ballX, ballY);
+  ctx.shadowBlur = 0;
+
+  // "P" letterform — large, stylized
+  const pX = 340 * u;
+  const pY = 520 * u;
+
+  ctx.font = `800 ${420 * u}px "Georgia", "Times New Roman", serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // P glow
+  ctx.shadowColor = 'rgba(85, 198, 217, 0.3)';
+  ctx.shadowBlur = 40 * u;
+  ctx.fillStyle = 'rgba(245, 240, 223, 0.9)';
+  ctx.fillText('P', pX, pY);
+  ctx.shadowBlur = 0;
+
+  // Accent dots (text segments)
+  const dotColors = ['#ff9c5b', '#f0c35f', '#84d96c', '#55c6d9', '#8ba7ff'];
+  const dotPositions = [
+    [780*u, 260*u], [720*u, 340*u], [800*u, 580*u], [700*u, 660*u], [760*u, 740*u]
+  ];
+
+  for (let i = 0; i < dotPositions.length; i++) {
+    const [dx, dy] = dotPositions[i];
+    ctx.fillStyle = dotColors[i];
+    ctx.globalAlpha = 0.7;
+    ctx.beginPath();
+    ctx.arc(dx, dy, 8 * u, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Small "retext" label at bottom
+  ctx.font = `600 ${36 * u}px "Menlo", "SF Mono", monospace`;
+  ctx.textAlign = 'center';
+  ctx.fillStyle = 'rgba(85, 198, 217, 0.5)';
+  ctx.fillText('pretext', s / 2 + 60 * u, s - 80 * u);
+}
+
+// Draw all sizes
+['icon1024', 'icon512', 'icon180', 'icon60'].forEach(id => {
+  drawIcon(document.getElementById(id));
+});
+</script>
+</body>
+</html>

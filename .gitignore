@@ -1,0 +1,27 @@
+# IDE / Editor
+.a5c/
+.idea/
+*.xcuserdata/
+*.xcworkspace/
+
+# iOS
+ios/.build/
+ios/SampleApp/.build/
+*.swiftpm/
+DerivedData/
+
+# Android
+android/.gradle/
+android/build/
+android/*/build/
+android/local.properties
+android/sample-app/build/
+
+# Docs
+docs/node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# OS
+.DS_Store
+Thumbs.db
